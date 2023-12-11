@@ -1,9 +1,11 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
+const cors = require("cors");
 
 const app = express();
 const port = 3000;
 
+app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
@@ -19,7 +21,7 @@ app.post("/submit", async (req, res) => {
 
     const mailOptions = {
         from: "info@cts-egy.com", // Replace with your Gmail email address
-        to: "minanagykhalefa@gmail.com", // Replace with the recipient's email address
+        to: "mohamedup2002@gmail.com", // Replace with the recipient's email address
         subject: "New Africa Queen Form Submission",
         html: `
       <p><strong>Name:</strong> ${name}</p>
@@ -38,6 +40,6 @@ app.post("/submit", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT||port, () => {
     console.log(`Server is running on port ${port}`);
 });
