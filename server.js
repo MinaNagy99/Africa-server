@@ -2,6 +2,7 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+var morgan = require('morgan')
 
 const app = express();
 const port = 3001;
@@ -10,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors());
+app.use(morgan('combined'))
 
 // Create a reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -50,6 +52,6 @@ app.post("/submit", (req, res) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT||port, () => {
   console.log(`server is running on port ${port}`);
 });
