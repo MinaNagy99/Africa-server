@@ -21,7 +21,7 @@ app.post("/submit", async (req, res) => {
 
     const mailOptions = {
         from: "info@cts-egy.com", // Replace with your Gmail email address
-        to: "mohamedup2002@gmail.com", // Replace with the recipient's email address
+        to: "minanagykhalefa@gmial.com", // Replace with the recipient's email address
         subject: "New Africa Queen Form Submission",
         html: `
       <p><strong>Name:</strong> ${name}</p>
