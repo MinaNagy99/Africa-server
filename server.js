@@ -1,57 +1,47 @@
 const express = require("express");
 const nodemailer = require("nodemailer");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-var morgan = require('morgan')
 
 const app = express();
-const port = 3001;
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+const port = 3000;
 
 app.use(cors());
-app.use(morgan('combined'))
+app.use(express.json());
 
-// Create a reusable transporter object using the default SMTP transport
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "info@cts-egy.com", // your Gmail email
-    pass: "ccfn fhvr tszn wxvi",
-  },
+const transporter = nodemailer.createTransport({
+	host: "smtp.titan.email",
+	port: 465,
+	secure: true,
+	auth: {
+		user: "info@africa-queen.com", // Replace with your Gmail email address
+		pass: "Africa@queen", // Replace with your Gmail password or app-specific password
+	},
 });
 
-app.post("/submit", (req, res) => {
-  const {  name, phone, email, message } = req.body;
+app.post("/submit", async (req, res) => {
+	const { name, email, phone, message } = req.body;
 
-  let mailOptions = {
-    from: "info@cts-egy.com",
-    to: "kamel.mamdouh@cts-egy.com",
-    subject: "New Africa Queen Form Submission",
-    html: `
-  <p><strong>Name:</strong> ${name}</p>
-  <p><strong>Email:</strong> ${email}</p>
-  <p><strong>Phone:</strong> ${phone}</p>
-  <p><strong>Message:</strong> ${message}</p>
-`,
-  };
+	const mailOptions = {
+		from: "info@africa-queen.com", // Replace with your Gmail email address
+		to: "info@africa-queen.com", // Replace with the recipient's email address
+		subject: "New Africa Queen Form Submission",
+		html: `
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      <p><strong>Message:</strong> ${message}</p>
+    `,
+	};
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error("Error sending email:", error);
-      return res.status(500).json({
-        success: false,
-        error: "Failed to send email",
-        details: error,
-      });
-    } else {
-      console.log("Message sent: %s", info.messageId);
-      return res.status(200).json({ success: true });
-    }
-  });
+	try {
+		await transporter.sendMail(mailOptions);
+		res.status(200).json({ message: "Form submitted successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "Failed to submit form" });
+	}
 });
 
-app.listen(process.env.PORT||port, () => {
-  console.log(`server is running on port ${port}`);
+app.listen(port, () => {
+	console.log(`Server is running on port ${port}`);
 });
